@@ -2,6 +2,7 @@
 
 namespace Services;
 
+use Core\DotEnv;
 use Core\ServiceContainer;
 use Repositories\TokenRepository;
 
@@ -21,9 +22,10 @@ class AuthService
 
     public function checkCredentials($username, $password)
     {
-        $adminData = ServiceContainer::getInstance()->get('env')['admin'];
+        /** @var DotEnv $env */
+        $env = ServiceContainer::getInstance()->get('env');
 
-        return $username === $adminData['username'] && $password === $adminData['password'];
+        return $username === $env->get('ADMIN_USERNAME') && $password === $env->get('ADMIN_PASSWORD');
     }
 
     public function setUpToken()
@@ -59,12 +61,12 @@ class AuthService
 
     private function setTokenToCookie($value)
     {
-        setcookie(self::COOKIE_TOKEN_KEY, $value, self::COOKIE_EXPIRATION_TIME);
+        setcookie(self::COOKIE_TOKEN_KEY, $value, time() + self::COOKIE_EXPIRATION_TIME);
     }
 
     private function generateToken()
     {
-        $tokenSecret = ServiceContainer::getInstance()->get('env')['token_secret'];
+        $tokenSecret = ServiceContainer::getInstance()->get('env')->get('TOKEN_SECRET');
 
         return hash('md5', time() . $tokenSecret);
     }

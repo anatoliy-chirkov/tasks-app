@@ -37,7 +37,7 @@ class AuthController extends BaseController implements IProtected
             if (!$validator->isValid($request->post(), ['username' => 'required', 'password' => 'required'])) {
                 $notificationService->set(IType::FAIL, $validator->getFirstError());
 
-                return $this->renderWithTemplate();
+                return $this->renderWithLayout();
             }
 
             if (!$this->authService->checkCredentials(
@@ -46,13 +46,15 @@ class AuthController extends BaseController implements IProtected
             ) {
                 $notificationService->set(IType::FAIL, 'Wrong username or password');
 
-                return $this->renderWithTemplate();
+                return $this->renderWithLayout();
             }
+
+            $this->authService->setUpToken();
 
             $request->redirect('/');
         }
 
-        return $this->renderWithTemplate();
+        return $this->renderWithLayout();
     }
 
     public function logout(Request $request)

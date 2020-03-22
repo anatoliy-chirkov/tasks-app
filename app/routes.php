@@ -33,7 +33,7 @@ return [
         '/login',
         AuthController::class,
         'login',
-        [IMethod::POST]
+        [IMethod::GET, IMethod::POST]
     ),
     new Route(
         '/logout',

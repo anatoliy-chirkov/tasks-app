@@ -25,29 +25,25 @@ abstract class BaseController
         return $this->$realActionName(...$arguments);
     }
 
-    protected function renderWithTemplate($vars = []): string
+    protected function renderWithLayout($vars = []): string
     {
         $serviceContainer = ServiceContainer::getInstance();
 
-        $content      = $this->render($vars);
-        $title        = $serviceContainer->get('env')['app']['name'];
-        $description  = $serviceContainer->get('env')['app']['description'];
+        $innerViewPath = $this->getViewPath();
+        $title         = $serviceContainer->get('env')->get('APP_NAME');
+        $description   = $serviceContainer->get('env')->get('APP_DESCRIPTION');
         /** @var Notification $notification */
-        $notification = $serviceContainer->get('notification_service')->flush();
+        $notification  = $serviceContainer->get('notification_service')->flush();
+        $isAuthorized  = $serviceContainer->get('auth_service')->verifyCookieToken();
+
+        foreach ($vars as $varName => $varValue) {
+            $$varName = $varValue;
+        }
 
         unset($vars);
         unset($serviceContainer);
 
         return require_once APP_PATH . '/Views/layout.php';
-    }
-
-    protected function render($vars = []): string
-    {
-        foreach ($vars as $varName => $varValue) {
-            $$varName = $varValue;
-        }
-
-        return require_once $this->getViewPath();
     }
 
     /**
@@ -56,8 +52,8 @@ abstract class BaseController
     private function getViewPath(): string
     {
         $backtrace = debug_backtrace();
-        $folderName = str_replace('Controller', '', array_pop(explode('\\', self::class)));
-        $viewName = $backtrace[3]['function'] . '.php';
+        $folderName = str_replace('Controller', '', array_pop(explode('\\', static::class)));
+        $viewName = $backtrace[2]['function'] . '.php';
 
         return APP_PATH . '/' . 'Views' . '/' . $folderName . '/' . $viewName;
     }

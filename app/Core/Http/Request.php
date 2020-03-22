@@ -21,7 +21,7 @@ class Request
 
     public function redirect(string $to)
     {
-        header("Location: http:// . {$_SERVER['HTTP_HOST']}{$to}");
+        header("Location: http://{$_SERVER['HTTP_HOST']}{$to}");
     }
 
     public function getUri()

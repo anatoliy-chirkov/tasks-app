@@ -27,7 +27,7 @@ class Validator
                 $delimiterPos = strpos($validationType, '|');
 
                 if ($delimiterPos) {
-                    $additionalParam = substr($validationType, $delimiterPos);
+                    $additionalParam = substr($validationType, $delimiterPos + 1);
                     $validationType = substr($validationType, 0, $delimiterPos);
                 }
 
@@ -39,7 +39,7 @@ class Validator
                 ;
 
                 if (!$isValid) {
-                    $this->errors[] = $this->getErrorText($key, $validationType);
+                    $this->errors[$key][] = $this->getErrorText($key, $validationType);
                 }
             }
         }
@@ -49,7 +49,7 @@ class Validator
 
     public function getFirstError()
     {
-        return !empty($this->errors) ? $this->errors[0] : null;
+        return !empty($this->errors) ? array_shift($this->errors)[0] : null;
     }
 
     public function getErrors()
@@ -57,9 +57,19 @@ class Validator
         return $this->errors;
     }
 
-    private function getErrorText($key, string $type)
+    private function getErrorText($key, string $type, $additionalParam = null)
     {
-        return "{$key} is invalid";
+        switch ($type) {
+            case IType::REQUIRED:
+                return "{$key} is required";
+            case IType::LENGTH:
+                return "{$key} max length is {$additionalParam}";
+            case IType::XSS:
+                return "{$key} field shouldn't has scripts";
+            case IType::EMAIL:
+            default:
+                return "{$key} is invalid";
+        }
     }
 
     private function validateLength($value, $length)

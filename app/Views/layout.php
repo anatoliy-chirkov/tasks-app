@@ -2,7 +2,7 @@
 /**
  * @var $title string
  * @var $description string
- * @var $content string
+ * @var $innerViewPath string
  * @var $notification \Services\NotificationService\Notification
  */
 ?>
@@ -16,6 +16,6 @@
         <div><?= $notification->message ?></div>
     <? endif; ?>
 
-    <?= $content ?>
+    <? require_once $innerViewPath; ?>
 </body>
 </html>

@@ -8,7 +8,6 @@ use Core\Http\Request;
 use Core\ServiceContainer;
 use Core\Validation\Validator;
 use Repositories\TaskRepository\TaskRepository;
-use Services\AuthService;
 use Services\NotificationService\IType;
 use Services\NotificationService\NotificationService;
 
@@ -16,8 +15,6 @@ class TaskController extends BaseController implements IProtected
 {
     /** @var TaskRepository */
     private $taskRepository;
-    /** @var AuthService */
-    private $authService;
     /** @var Validator */
     private $validator;
 
@@ -26,7 +23,6 @@ class TaskController extends BaseController implements IProtected
         $serviceContainer = ServiceContainer::getInstance();
 
         $this->taskRepository = $serviceContainer->get('task_repository');
-        $this->authService = $serviceContainer->get('auth_service');
         $this->validator = $serviceContainer->get('validator');
     }
 
@@ -40,9 +36,12 @@ class TaskController extends BaseController implements IProtected
         $sortBy = $request->get('sortBy', 'id');
         $page = $request->get('page', 1);
 
-        $tasks = $this->taskRepository->get($page, $sortBy);
+        $tasks = $this->taskRepository->get($sortBy, $page);
+        $count = $this->taskRepository->count();
 
-        return $this->renderWithTemplate(['tasks' => $tasks]);
+        $pages = ceil($count / 3);
+
+        return $this->renderWithLayout(['tasks' => $tasks, 'page' => $page, 'pages' => $pages]);
     }
 
     public function create(Request $request)
@@ -58,7 +57,7 @@ class TaskController extends BaseController implements IProtected
             ])) {
                 $notificationService->set(IType::FAIL, $this->validator->getFirstError());
 
-                return $this->renderWithTemplate();
+                return $this->renderWithLayout();
             }
 
             $this->taskRepository->create(
@@ -72,7 +71,7 @@ class TaskController extends BaseController implements IProtected
             $request->redirect('/');
         }
 
-        return $this->renderWithTemplate();
+        return $this->renderWithLayout();
     }
 
     public function edit(Request $request, int $taskId)
@@ -84,7 +83,7 @@ class TaskController extends BaseController implements IProtected
             if (!$this->validator->isValid($request->post(), ['text' => 'required'])) {
                 $notificationService->set(IType::FAIL, $this->validator->getFirstError());
 
-                return $this->renderWithTemplate();
+                return $this->renderWithLayout();
             }
 
             $this->taskRepository->edit($taskId, $request->post('text'));
@@ -94,7 +93,9 @@ class TaskController extends BaseController implements IProtected
             $request->redirect('/');
         }
 
-        return $this->renderWithTemplate();
+        $task = $this->taskRepository->getOne($taskId);
+
+        return $this->renderWithLayout(['task' => $task]);
     }
 
     public function setComplete(Request $request, int $taskId)

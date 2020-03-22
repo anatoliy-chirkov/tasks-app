@@ -2,6 +2,8 @@
 
 namespace Core\Db;
 
+use Core\Db\Exceptions\DbException;
+
 class DbContext
 {
     private $dbh;
@@ -17,6 +19,10 @@ class DbContext
     {
         $sth = $this->dbh->prepare($sql);
         $sth->execute($params);
+
+        if (!empty($sth->errorInfo()[2])) {
+            throw new DbException($sth->errorInfo()[2]);
+        }
 
         return $sth->fetchAll();
     }

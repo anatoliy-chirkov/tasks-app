@@ -24,9 +24,11 @@ class SortBy implements ISql
 
     public function getSql()
     {
-        return 'ORDER BY' . array_key_exists($this->name, self::NAME_TO_SQL)
+        $expr = array_key_exists($this->name, self::NAME_TO_SQL)
             ? self::NAME_TO_SQL[$this->name]
-            : 'id'
+            : 'id ASC'
         ;
+
+        return 'ORDER BY' . ' ' . $expr;
     }
 }

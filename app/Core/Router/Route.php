@@ -5,7 +5,7 @@ namespace Core\Router;
 class Route
 {
     private const
-        EMBEDDED_PARAMS_REGEX        = ':[a-zA-Z]+',
+        EMBEDDED_PARAMS_REGEX        = '/:[a-zA-Z]+/',
         EMBEDDED_PARAMS_VALUES_REGEX = '[0-9a-z]+'
     ;
 
@@ -24,7 +24,7 @@ class Route
 
     public function getRouteRegularExpression()
     {
-        $regularExpression = str_replace('/', '\/', $this->uri);
+        $regularExpression = '/^' . str_replace('/', '\/', $this->uri) . '$/';
 
         $embeddedParams = $this->getRawEmbeddedParams();
 

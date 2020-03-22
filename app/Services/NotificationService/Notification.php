@@ -7,14 +7,23 @@ class Notification
     public $type;
     public $message;
 
-    public function __construct(string $type, string $message)
+    public static function create(string $type, string $message)
     {
-        $this->type = $type;
-        $this->message = $message;
+        $notification = new self;
+
+        $notification->type = $type;
+        $notification->message = $message;
+
+        return $notification;
+    }
+
+    public static function stub()
+    {
+        return new self;
     }
 
     public function isset()
     {
-        return $this->message === null;
+        return isset($this->message);
     }
 }

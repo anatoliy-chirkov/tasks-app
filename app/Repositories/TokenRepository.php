@@ -15,7 +15,7 @@ class TokenRepository
 
     public function save(string $token)
     {
-        $sql = "INSERT INTO token VALUES (null, ?)";
+        $sql = "INSERT INTO token (token) VALUES (?)";
 
         $this->context->query($sql, [$token]);
     }
