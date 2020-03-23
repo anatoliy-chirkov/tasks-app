@@ -41,7 +41,7 @@ class TaskController extends BaseController implements IProtected
 
         $pages = ceil($count / 3);
 
-        return $this->renderWithLayout(['tasks' => $tasks, 'page' => $page, 'pages' => $pages]);
+        return $this->renderWithLayout(['tasks' => $tasks, 'page' => $page, 'pages' => $pages, 'sortBy' => $sortBy]);
     }
 
     public function create(Request $request)
@@ -100,10 +100,10 @@ class TaskController extends BaseController implements IProtected
 
     public function setComplete(Request $request, int $taskId)
     {
-        $this->taskRepository->setComplete($taskId);
+        $this->taskRepository->setComplete($request->decodedJson('isComplete'), $taskId);
 
-        // show success / or this is ajax method?
-
-        //$request->redirect('/');
+        $this->renderJson([
+            'status' => 'OK'
+        ]);
     }
 }

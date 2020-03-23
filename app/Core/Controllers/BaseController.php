@@ -25,6 +25,13 @@ abstract class BaseController
         return $this->$realActionName(...$arguments);
     }
 
+    protected function renderJson(array $response)
+    {
+        header('Content-Type: application/json');
+
+        echo json_encode($response);
+    }
+
     protected function renderWithLayout($vars = []): string
     {
         $serviceContainer = ServiceContainer::getInstance();

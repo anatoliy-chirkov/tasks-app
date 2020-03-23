@@ -6,7 +6,7 @@
  * 1. Setup configuration and services
  * 2. Run app
  */
-
+session_start();
 define('APP_PATH', __DIR__);
 define('ROOT_PATH', __DIR__ . '/..');
 
@@ -42,6 +42,8 @@ $serviceContainer
 try {
     (new Bootstrapper())->bootstrap();
 } catch (\Exception $e) {
+    header("HTTP/1.0 {$e->getCode()}");
+
     echo <<<HTML
 <html>
     <header>

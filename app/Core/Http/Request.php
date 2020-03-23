@@ -8,6 +8,7 @@ class Request
     private $method;
     private $postData;
     private $getData;
+    private $rawData;
 
     public function __construct()
     {
@@ -17,11 +18,13 @@ class Request
         $this->method   = $_SERVER['REQUEST_METHOD'];
         $this->postData = $_POST;
         $this->getData  = $_GET;
+        $this->rawData  = file_get_contents("php://input");
     }
 
     public function redirect(string $to)
     {
         header("Location: http://{$_SERVER['HTTP_HOST']}{$to}");
+        exit;
     }
 
     public function getUri()
@@ -55,5 +58,16 @@ class Request
         }
 
         return isset($this->getData[$key]) ? $this->getData[$key] : $default;
+    }
+
+    public function decodedJson(string $key = null)
+    {
+        $decoded = json_decode($this->rawData);
+
+        if (!$key) {
+            return $decoded;
+        }
+
+        return isset($decoded->$key) ? $decoded->$key : null;
     }
 }

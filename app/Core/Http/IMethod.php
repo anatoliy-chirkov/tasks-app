@@ -5,7 +5,8 @@ namespace Core\Http;
 interface IMethod
 {
     public const
-        POST = 'POST',
-        GET  = 'GET'
+        POST  = 'POST',
+        GET   = 'GET',
+        PATCH = 'PATCH'
     ;
 }

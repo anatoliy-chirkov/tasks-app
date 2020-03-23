@@ -12,7 +12,9 @@ class SortBy implements ISql
         'email'     => 'email ASC',
         '-email'    => 'email DESC',
         'text'      => 'text ASC',
-        '-text'     => 'text DESC'
+        '-text'     => 'text DESC',
+        'status'    => 'isCompleted ASC',
+        '-status'   => 'isCompleted DESC',
     ];
 
     private $name;

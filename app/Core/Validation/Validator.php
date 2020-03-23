@@ -59,6 +59,8 @@ class Validator
 
     private function getErrorText($key, string $type, $additionalParam = null)
     {
+        $key = ucfirst($key);
+
         switch ($type) {
             case IType::REQUIRED:
                 return "{$key} is required";

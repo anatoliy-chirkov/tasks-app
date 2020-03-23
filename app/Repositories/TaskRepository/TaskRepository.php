@@ -53,10 +53,10 @@ class TaskRepository
         $this->context->query($sql, [$text, 1, $taskId]);
     }
 
-    public function setComplete(int $taskId)
+    public function setComplete($isComplete, int $taskId)
     {
-        $sql = "UPDATE task SET isCompleted = ? WHERE id = ?}";
+        $sql = "UPDATE task SET isCompleted = ? WHERE id = ?";
 
-        $this->context->query($sql, [1, $taskId]);
+        $this->context->query($sql, [(int) $isComplete, $taskId]);
     }
 }

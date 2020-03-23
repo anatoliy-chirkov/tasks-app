@@ -27,7 +27,7 @@ return [
         '/tasks/:id/set-complete',
         TaskController::class,
         'setComplete',
-        [IMethod::POST]
+        [IMethod::PATCH]
     ),
     new Route(
         '/login',
